@@ -38,3 +38,11 @@ Judgment calls made while building, in order.
 - **Ensemble is worse than its best member** (0.751), because the weak autoencoder dilutes the XGBoost ranking. Reported as a negative result.
 - **Calibration:** val Brier is 0.00031 both raw and calibrated, so calibration changes little here. The reliability curve is only informative in the top bin: at 0.13% fraud, quantile bins below that hold almost no frauds.
 - **Val PR-AUC of 0.82-0.86 is for validation only.** Do not expect the same on test; the time split and 52 test frauds will make that number noisier.
+
+## Phase 5
+12. **CI models chosen on validation.** "Top 2 models" for bootstrap CIs are the top 2 by validation PR-AUC (Random Forest, XGBoost) plus the deployed model, so test results never pick which models get reported.
+13. **Each model gets its own val-chosen cost threshold** for the operating-point table, including non-probability scorers (isolation forest, autoencoder). The 0.5 baseline is only reported for models with `predict_proba`.
+14. **Flag-nothing is a candidate threshold** (just above the top score), so a high review cost can legitimately choose it. Ties between equal-cost thresholds go to the higher one (fewer flags).
+15. **Deployed model is not switched after seeing test.** Random Forest scores higher on test (0.778 vs 0.749 deployed) but within overlapping CIs, and the selection rule was frozen on validation. Reported in results.md caveats.
+16. **Honest result on the cost model:** on test, the val-chosen threshold (0.2812, cost 2,632) is no better than a plain 0.5 (cost 2,592) for the calibrated model. Both save about 57-58% vs flag-nothing. Not tuned further.
+17. **Test-set results (deployed, calibrated XGBoost):** PR-AUC 0.749 [0.626, 0.858], recall at 90% precision 0.712 [0.559, 0.852], at the val-chosen threshold precision 0.750, recall 0.750 (TP 39, FP 13, FN 13), cost saving 3,536 (57.3%) vs flag-nothing at review cost 5. `review_cost` is an assumption.

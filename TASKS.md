@@ -33,14 +33,14 @@ Work in order. Tick items when done and verified. Budget in brackets.
 - [x] Save best model, scaler, and metadata to `models/`
 
 ## Phase 5: Evaluation and cost [0:40]
-- [ ] `src/fraud/evaluate.py`: PR-AUC, ROC-AUC, precision, recall, F1, F2, recall at 90% precision, precision at 80% recall, confusion matrix
-- [ ] Bootstrap 95% CI (at least 500 resamples) on test PR-AUC for top 2 models
-- [ ] `src/fraud/cost.py`: cost function, best threshold on validation, savings versus flag-nothing and threshold 0.5
-- [ ] Cost-versus-threshold curve and review-cost sensitivity table {1, 5, 10, 25}
-- [ ] PR and ROC overlay plots for all models
-- [ ] Test set evaluated once; `reports/results.md` generated with tables and figures
-- [ ] `tests/test_cost.py` with hand-computed cases
-- [ ] Save `models/threshold.json`
+- [x] `src/fraud/evaluate.py`: PR-AUC, ROC-AUC, precision, recall, F1, F2, recall at 90% precision, precision at 80% recall, confusion matrix
+- [x] Bootstrap 95% CI (at least 500 resamples) on test PR-AUC for top 2 models
+- [x] `src/fraud/cost.py`: cost function, best threshold on validation, savings versus flag-nothing and threshold 0.5
+- [x] Cost-versus-threshold curve and review-cost sensitivity table {1, 5, 10, 25}
+- [x] PR and ROC overlay plots for all models
+- [x] Test set evaluated once; `reports/results.md` generated with tables and figures
+- [x] `tests/test_cost.py` with hand-computed cases
+- [x] Save `models/threshold.json`
 
 ## Phase 6: Explainability [0:20]
 - [ ] `src/fraud/explain.py`: SHAP TreeExplainer on the best tree model

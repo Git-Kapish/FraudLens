@@ -1,0 +1,7 @@
+{
+  "threshold": 0.28125,
+  "review_cost": 5.0,
+  "model": "best_calibrated",
+  "model_version": "M3_xgb-20261030",
+  "selected_on": "validation, minimising cost"
+}
