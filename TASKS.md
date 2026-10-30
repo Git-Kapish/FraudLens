@@ -57,10 +57,10 @@ Work in order. Tick items when done and verified. Budget in brackets.
 - [x] Measure p95 latency over 500 calls with `scripts/replay.py` and record it in `reports/results.md`
 
 ## Phase 8: Dashboard and replay [0:35]
-- [ ] `app/dashboard.py` with 5 pages: Overview, Model comparison, Threshold and cost (live sliders), Transaction explorer (SHAP per row), Live replay
-- [ ] `scripts/replay.py` streams test transactions in time order to the API with adjustable speed
-- [ ] Live replay page shows running flags, alert rate, and cumulative cost saved
-- [ ] Verify all pages load with no errors on trained artifacts
+- [x] `app/dashboard.py` with 5 pages: Overview, Model comparison, Threshold and cost (live sliders), Transaction explorer (SHAP per row), Live replay
+- [x] `scripts/replay.py` streams test transactions in time order to the API with adjustable speed
+- [x] Live replay page shows running flags, alert rate, and cumulative cost saved
+- [x] Verify all pages load with no errors on trained artifacts
 
 ## Phase 9: Ship [0:30]
 - [ ] `Dockerfile` (API) and `docker-compose.yml` (API + dashboard)

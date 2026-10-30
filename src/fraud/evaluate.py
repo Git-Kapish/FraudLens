@@ -241,6 +241,7 @@ def run() -> dict[str, Any]:
     )
     report.make_figures(out)
     report.write_results(out)
+    report.write_summary(out)
     return out
 
 

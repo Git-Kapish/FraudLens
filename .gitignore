@@ -15,3 +15,5 @@ kaggle.json
 *.egg-info/
 train_run.log
 api_server.log
+.playwright-mcp/
+dashboard_server.log

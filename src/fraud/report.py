@@ -131,6 +131,56 @@ def make_figures(out: dict[str, Any]) -> None:
     _confusion(out)
 
 
+def _thin(*arrays: np.ndarray, n: int) -> list[list[float]]:
+    """Evenly subsample parallel curve arrays to at most n points (keeps both end points)."""
+    idx = np.linspace(0, len(arrays[0]) - 1, min(n, len(arrays[0]))).astype(int)
+    return [np.asarray(a)[idx].round(5).tolist() for a in arrays]
+
+
+def write_summary(out: dict[str, Any]) -> None:
+    """Write reports/test_results.json: what the dashboard needs, without re-running anything."""
+    meta, y = out["meta"], out["y"]["test"]
+    models = {}
+    for name, r in out["results"].items():
+        p, rec, _ = precision_recall_curve(y, r["s_test"])
+        fpr, tpr, _ = roc_curve(y, r["s_test"])
+        models[name] = {
+            "label": label(name, meta),
+            "val_pr_auc": val_pr_auc(name, meta),
+            **{
+                k: r[k]
+                for k in (
+                    "test_pr_auc",
+                    "test_roc_auc",
+                    "recall_at_precision",
+                    "precision_at_recall",
+                    "threshold",
+                    "precision",
+                    "recall",
+                    "f1",
+                    "f2",
+                    "n_flagged",
+                    "test_cost",
+                    "saving_pct",
+                )
+            },
+            "pr_curve": dict(zip(("recall", "precision"), _thin(rec, p, n=400), strict=True)),
+            "roc_curve": dict(zip(("fpr", "tpr"), _thin(fpr, tpr, n=400), strict=True)),
+        }
+    summary = {
+        "model_version": meta["model_version"],
+        "deployed": DEPLOYED,
+        "review_cost": load_config()["cost"]["review_cost"],
+        "split_sizes": out["split_sizes"],
+        "models": models,
+        "cis": {n: {k: list(v) for k, v in c.items()} for n, c in out["cis"].items()},
+        "sensitivity": out["sensitivity"].to_dict(orient="records"),
+    }
+    path = resolve_path("results_md").parent / "test_results.json"
+    path.write_text(json.dumps(summary), encoding="utf-8")
+    logger.info("Saved %s", path)
+
+
 def md_table(df: pd.DataFrame) -> str:
     """Render a frame as a GitHub markdown table."""
     rows = ["| " + " | ".join(map(str, df.columns)) + " |", "|" + "---|" * len(df.columns)]

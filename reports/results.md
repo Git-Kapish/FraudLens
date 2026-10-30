@@ -90,8 +90,8 @@ The threshold is re-chosen on validation for each review cost, then applied to t
 
 | | p50 (ms) | p95 (ms) |
 |---|---|---|
-| Server-side `latency_ms` | 16.27 | 20.74 |
-| Client round trip | 23.53 | 28.76 |
+| Server-side `latency_ms` | 15.60 | 26.63 |
+| Client round trip | 22.29 | 35.92 |
 <!-- latency:end -->
 
 ## Caveats
