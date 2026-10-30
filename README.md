@@ -154,12 +154,18 @@ The full list, with the reasons, is in [`reports/decisions.md`](reports/decision
 - **The cost model is an assumption.** `review_cost` is not measured, and treating `Amount` as the cost of a miss ignores chargeback fees, customer friction and repeated fraud on the same card.
 - **Validation is reused.** It is used to pick the deployed model, to compare calibration and to choose the threshold, so the validation numbers are optimistic (validation cost at the chosen threshold is far below test cost). The test set is the number to trust.
 - **Calibration is weak evidence.** At 0.1% fraud, most reliability-curve bins hold almost no frauds, and isotonic calibration creates tied scores that lower PR-AUC slightly (0.765 raw vs 0.749 calibrated).
+- **The cost-chosen threshold is fragile.** The calibrated scores form a staircase and the validation cost curve is nearly flat near its minimum (55 frauds), so tiny numerical changes move the chosen step. Retraining on Linux instead of Windows moved it from 0.28 to 0.09: 66 transactions flagged instead of 52, precision 0.59 instead of 0.75, same recall, saving 56.2% instead of 57.3%. The model ranking was stable; which transactions get flagged was not.
 - **Latency** was measured on one laptop with one worker and sequential calls; it says nothing about throughput under concurrent load.
 - **Not production-grade.** No authentication, rate limiting, drift monitoring or retraining pipeline; metrics are in memory and reset on restart.
 
 ## Reproducibility
 
-Dependencies are pinned. Seed 42 is set for numpy, sklearn, XGBoost, PyTorch and Optuna. The models are pickles, so they must load with the same scikit-learn and XGBoost versions they were trained with (hence the pins). See `reports/decisions.md` for the clean-clone check.
+Dependencies are pinned. Seed 42 is set for numpy, sklearn, XGBoost, PyTorch and Optuna. The models are pickles, so they must load with the same scikit-learn and XGBoost versions they were trained with (hence the pins).
+
+- **Same OS: exact.** A fresh clone on Windows reproduced every committed number and file bit for bit.
+- **Windows vs Linux: close, not exact.** The scikit-learn models (logistic regression, random forest, isolation forest) are identical across both. XGBoost and PyTorch give slightly different floating-point results per platform: single-model test PR-AUC moved by 0.001-0.005, the deployed model by -0.003 (0.749 vs 0.746), and the same model was chosen. Results that chain several of these moved more: Optuna picked different parameters (tuned XGBoost 0.766 vs 0.758) and the rank-average ensemble moved from 0.594 to 0.653. The cost threshold moved too (see Limitations).
+
+Details are in `reports/decisions.md`.
 
 ## Repository layout
 

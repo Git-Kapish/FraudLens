@@ -110,7 +110,9 @@ def pick_examples(scores: np.ndarray, flagged: np.ndarray, y: np.ndarray, n: int
 def waterfall_plots(
     explainer: shap.TreeExplainer, X: pd.DataFrame, rows: list[int], out_dir: Path
 ) -> list[Path]:
-    """One waterfall PNG per chosen row."""
+    """One waterfall PNG per chosen row (none if no fraud was flagged)."""
+    if not rows:
+        return []
     paths = []
     values = shap_values(explainer, X.iloc[rows])
     for n, (pos, vals) in enumerate(zip(rows, values, strict=True), start=1):

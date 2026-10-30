@@ -27,7 +27,7 @@ serve:
 	$(BIN)/uvicorn fraud.api.main:app --reload --port 8000
 
 dashboard:
-	$(BIN)/streamlit run app/dashboard.py
+	$(BIN)/streamlit run app/dashboard.py --server.headless true --browser.gatherUsageStats false
 
 test:
 	$(BIN)/pytest --cov=src/fraud --cov-report=term-missing

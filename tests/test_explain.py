@@ -62,6 +62,12 @@ def test_global_and_waterfall_plots_write_files(fitted, tmp_path):
     assert all(p.stat().st_size > 0 for p in paths)
 
 
+def test_waterfall_plots_with_no_flagged_frauds_is_a_no_op(fitted, tmp_path):
+    model, X, _ = fitted
+    # SHAP raises IndexError on an empty frame; a run that flags no fraud must not crash
+    assert waterfall_plots(build_explainer(model), X, [], tmp_path) == []
+
+
 def test_pick_examples_spreads_over_flagged_frauds_only():
     scores = np.array([0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3])
     y = np.array([1, 0, 1, 1, 1, 0, 1])
