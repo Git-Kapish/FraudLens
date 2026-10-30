@@ -8,7 +8,6 @@ __pycache__/
 mlruns/
 data/raw/
 data/processed/
-models/*.joblib
 models/*.pt
 kaggle.json
 .env

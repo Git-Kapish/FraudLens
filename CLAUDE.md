@@ -76,5 +76,5 @@ make docker      # docker compose up --build
 - Work through `TASKS.md` in order; tick each item when done and verified.
 - After each phase: run `make test` and `make lint`, then give a 2-3 line summary of what was built and any numbers worth noting.
 - If the dataset cannot be downloaded (no Kaggle credentials), stop and print the manual download steps instead of generating fake data. For unit tests only, a small synthetic fixture in `tests/` is fine.
-- Never commit `data/`, `models/*.joblib`, `mlruns/`, or `kaggle.json`.
+- Never commit `data/`, `mlruns/`, or `kaggle.json`. Trained `models/*.joblib` files ARE committed (small, user decision).
 - When a decision is ambiguous, pick the simpler option, note it in `reports/decisions.md`, and continue.
