@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import json
 import logging
+import re
 from typing import Any
 
 import matplotlib
@@ -134,6 +136,43 @@ def md_table(df: pd.DataFrame) -> str:
     rows = ["| " + " | ".join(map(str, df.columns)) + " |", "|" + "---|" * len(df.columns)]
     rows += ["| " + " | ".join(map(str, r)) + " |" for r in df.itertuples(index=False)]
     return "\n".join(rows)
+
+
+LATENCY_START = "<!-- latency:start -->"
+LATENCY_END = "<!-- latency:end -->"
+
+
+def load_latency() -> dict[str, Any] | None:
+    """Latest scripts/replay.py measurement, if one was saved."""
+    path = resolve_path("results_md").parent / "latency.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+
+
+def latency_block(data: dict[str, Any] | None) -> str:
+    """Markdown for the latency section body."""
+    if data is None:
+        return (
+            "_Not measured yet. Run `make serve`, then `python scripts/replay.py --write-report`._"
+        )
+    verdict = "met" if data["meets_target"] else "NOT met"
+    return (
+        f"`POST /predict`, {data['n_calls']} sequential calls on localhost, one worker, "
+        f"after a warm-up. Target: p95 < {data['target_p95_ms']} ms ({verdict}).\n\n"
+        "| | p50 (ms) | p95 (ms) |\n|---|---|---|\n"
+        f"| Server-side `latency_ms` | {data['server_p50_ms']:.2f} | {data['server_p95_ms']:.2f} |\n"
+        f"| Client round trip | {data['round_trip_p50_ms']:.2f} | {data['round_trip_p95_ms']:.2f} |"
+    )
+
+
+def update_latency(data: dict[str, Any]) -> None:
+    """Replace the latency section of an existing results.md in place."""
+    path = resolve_path("results_md")
+    text = path.read_text(encoding="utf-8")
+    block = f"{LATENCY_START}\n{latency_block(data)}\n{LATENCY_END}"
+    pattern = re.compile(f"{re.escape(LATENCY_START)}.*?{re.escape(LATENCY_END)}", re.DOTALL)
+    if not pattern.search(text):
+        raise ValueError("results.md has no latency section; run `make evaluate` first")
+    path.write_text(pattern.sub(lambda _: block, text), encoding="utf-8")
 
 
 def val_pr_auc(name: str, meta: dict[str, Any]) -> float:
@@ -288,6 +327,11 @@ The threshold is re-chosen on validation for each review cost, then applied to t
 ![PR curves](figures/pr_curves.png)
 ![ROC curves](figures/roc_curves.png)
 ![Reliability curve](figures/reliability_curve.png)
+
+## API latency
+{LATENCY_START}
+{latency_block(load_latency())}
+{LATENCY_END}
 
 ## Caveats
 {caveats(out)}

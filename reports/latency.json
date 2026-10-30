@@ -1,0 +1,10 @@
+{
+  "n_calls": 500,
+  "server_p50_ms": 16.266649996396154,
+  "server_p95_ms": 20.736884995858414,
+  "round_trip_p50_ms": 23.526850003690924,
+  "round_trip_p95_ms": 28.75957999422098,
+  "round_trip_max_ms": 129.49230000958778,
+  "target_p95_ms": 50,
+  "meets_target": true
+}

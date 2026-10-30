@@ -49,12 +49,12 @@ Work in order. Tick items when done and verified. Budget in brackets.
 - [x] Waterfall plots for 3 example flagged test transactions
 
 ## Phase 7: FastAPI service [0:40]
-- [ ] `src/fraud/api/schemas.py` Pydantic v2 models (30 features, `Amount >= 0`)
-- [ ] `src/fraud/api/main.py` with lifespan loading of model, threshold, explainer
-- [ ] Endpoints: `/health`, `/predict`, `/predict/batch`, `/explain`, `/metrics`
-- [ ] Structured request logging (id, score, latency only)
-- [ ] `tests/test_api.py` using `TestClient`: happy path, missing field, negative Amount, batch limit
-- [ ] Measure p95 latency over 500 calls with `scripts/replay.py` and record it in `reports/results.md`
+- [x] `src/fraud/api/schemas.py` Pydantic v2 models (30 features, `Amount >= 0`)
+- [x] `src/fraud/api/main.py` with lifespan loading of model, threshold, explainer
+- [x] Endpoints: `/health`, `/predict`, `/predict/batch`, `/explain`, `/metrics`
+- [x] Structured request logging (id, score, latency only)
+- [x] `tests/test_api.py` using `TestClient`: happy path, missing field, negative Amount, batch limit
+- [x] Measure p95 latency over 500 calls with `scripts/replay.py` and record it in `reports/results.md`
 
 ## Phase 8: Dashboard and replay [0:35]
 - [ ] `app/dashboard.py` with 5 pages: Overview, Model comparison, Threshold and cost (live sliders), Transaction explorer (SHAP per row), Live replay

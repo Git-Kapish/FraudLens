@@ -73,6 +73,7 @@ explain:
 api:
   max_batch_size: 1000
   p95_latency_target_ms: 50
+  latency_samples: 500
 
 mlflow:
   tracking_uri: file:./mlruns

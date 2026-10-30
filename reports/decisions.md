@@ -52,3 +52,10 @@ Judgment calls made while building, in order.
 19. **Global SHAP plots use a validation sample** (all 55 frauds + random legit rows, 5,000 total, seed 42), keeping the test set for the metrics and the three waterfall examples.
 20. **Waterfall examples are picked by score only**: the highest, middle and lowest-scoring flagged true frauds on test. Not chosen for how tidy the explanation looks. Top features by mean |SHAP| on val: V4, V14, V12, V10, V11. These are anonymised PCA components, so no business meaning is claimed.
 21. **`make evaluate` now also runs `fraud.explain`**, so SHAP figures and `reports/shap_examples.md` regenerate with the rest of the reports.
+
+## Phase 7
+22. **App factory.** `create_app(artifacts=None)` loads from `models/` in the lifespan (once, at startup); tests pass a tiny synthetic model, so the API tests need neither the dataset nor trained files. `fraud.api.main:app` is the production instance.
+23. **Custom 422 handler (bug found by a test).** FastAPI's default validation error body echoes the offending `input`. A `NaN` there cannot be rendered as JSON, so a NaN payload produced a 500. The handler returns only `loc`, `msg` and `type`, so bad payloads always give 422 and payload values are never echoed back. Request fields also reject unknown keys (`extra="forbid"`) and non-finite floats.
+24. **Single-row speed.** The XGBoost model is set to `n_jobs=1` at startup; thread fan-out only slows one-row calls. Endpoints are plain `def`, so FastAPI runs the CPU work in its thread pool.
+25. **Latency result (500 sequential `/predict` calls, localhost, 1 worker, after 20 warm-up calls):** server-side p50 16.3 ms / p95 20.7 ms; client round trip p50 23.5 ms / p95 28.8 ms. Target p95 < 50 ms met. Measured with `scripts/replay.py --write-report`, which updates the latency section in `results.md`. The first replay run was discarded because httpx per-request logging sat inside the timed region; the logger is now silenced.
+26. **Logging** is one JSON line per request: short request id, endpoint, score, flag, latency. Feature values are never logged.

@@ -84,6 +84,16 @@ The threshold is re-chosen on validation for each review cost, then applied to t
 ![ROC curves](figures/roc_curves.png)
 ![Reliability curve](figures/reliability_curve.png)
 
+## API latency
+<!-- latency:start -->
+`POST /predict`, 500 sequential calls on localhost, one worker, after a warm-up. Target: p95 < 50 ms (met).
+
+| | p50 (ms) | p95 (ms) |
+|---|---|---|
+| Server-side `latency_ms` | 16.27 | 20.74 |
+| Client round trip | 23.53 | 28.76 |
+<!-- latency:end -->
+
 ## Caveats
 - The test set has 52 frauds, so every test number is noisy. Use the intervals, not point estimates, to compare models; the top models are statistically indistinguishable.
 - A chronological split is harder than the random splits behind most published numbers on this dataset, because fraud patterns drift and later rows are never seen in training. Test PR-AUC (0.749 deployed) is below validation (0.847). That drop is expected and is not hidden.

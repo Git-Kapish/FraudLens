@@ -14,3 +14,4 @@ kaggle.json
 .DS_Store
 *.egg-info/
 train_run.log
+api_server.log
