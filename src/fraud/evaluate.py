@@ -248,6 +248,9 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     run()
     logger.info("Wrote %s", resolve_path("results_md"))
+    from fraud import explain  # SHAP figures belong to `make evaluate`
+
+    explain.run()
 
 
 if __name__ == "__main__":

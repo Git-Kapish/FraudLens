@@ -43,10 +43,10 @@ Work in order. Tick items when done and verified. Budget in brackets.
 - [x] Save `models/threshold.json`
 
 ## Phase 6: Explainability [0:20]
-- [ ] `src/fraud/explain.py`: SHAP TreeExplainer on the best tree model
-- [ ] Global summary and bar plots to `reports/figures/`
-- [ ] Function returning top-5 signed feature contributions for one transaction
-- [ ] Waterfall plots for 3 example flagged test transactions
+- [x] `src/fraud/explain.py`: SHAP TreeExplainer on the best tree model
+- [x] Global summary and bar plots to `reports/figures/`
+- [x] Function returning top-5 signed feature contributions for one transaction
+- [x] Waterfall plots for 3 example flagged test transactions
 
 ## Phase 7: FastAPI service [0:40]
 - [ ] `src/fraud/api/schemas.py` Pydantic v2 models (30 features, `Amount >= 0`)

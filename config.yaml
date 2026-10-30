@@ -65,6 +65,11 @@ evaluation:
   ci_level: 0.95
   prd_pr_auc_target: 0.75   # PRD success target, reported against but never tuned for
 
+explain:
+  top_k: 5
+  global_sample_size: 5000    # all val frauds + random legit rows up to this size
+  n_waterfalls: 3
+
 api:
   max_batch_size: 1000
   p95_latency_target_ms: 50

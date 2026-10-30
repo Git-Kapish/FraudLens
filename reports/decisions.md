@@ -46,3 +46,9 @@ Judgment calls made while building, in order.
 15. **Deployed model is not switched after seeing test.** Random Forest scores higher on test (0.778 vs 0.749 deployed) but within overlapping CIs, and the selection rule was frozen on validation. Reported in results.md caveats.
 16. **Honest result on the cost model:** on test, the val-chosen threshold (0.2812, cost 2,632) is no better than a plain 0.5 (cost 2,592) for the calibrated model. Both save about 57-58% vs flag-nothing. Not tuned further.
 17. **Test-set results (deployed, calibrated XGBoost):** PR-AUC 0.749 [0.626, 0.858], recall at 90% precision 0.712 [0.559, 0.852], at the val-chosen threshold precision 0.750, recall 0.750 (TP 39, FP 13, FN 13), cost saving 3,536 (57.3%) vs flag-nothing at review cost 5. `review_cost` is an assumption.
+
+## Phase 6
+18. **SHAP explains the raw XGBoost margin, not the calibrated probability.** Contributions are log-odds of the `scale_pos_weight` model before the isotonic step (base value 3.71 because that weight inflates raw scores). They explain the ranking; isotonic is a monotone map afterwards. Additivity is tested (sum of contributions + base = margin).
+19. **Global SHAP plots use a validation sample** (all 55 frauds + random legit rows, 5,000 total, seed 42), keeping the test set for the metrics and the three waterfall examples.
+20. **Waterfall examples are picked by score only**: the highest, middle and lowest-scoring flagged true frauds on test. Not chosen for how tidy the explanation looks. Top features by mean |SHAP| on val: V4, V14, V12, V10, V11. These are anonymised PCA components, so no business meaning is claimed.
+21. **`make evaluate` now also runs `fraud.explain`**, so SHAP figures and `reports/shap_examples.md` regenerate with the rest of the reports.
