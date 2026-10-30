@@ -84,7 +84,7 @@ Requires Python 3.11. The commands below use `make`; on Windows without `make`, 
 ```bash
 make setup      # venv + pinned dependencies
 make data       # download the dataset (needs ~/.kaggle/kaggle.json), or follow the printed manual steps
-make train      # train M0-M7, tune, calibrate, save to models/   (about 20 minutes)
+make train      # train M0-M7, tune, calibrate, save to models/   (about 10 minutes on a laptop CPU)
 make evaluate   # score the test set once, CIs, cost analysis, SHAP, reports/results.md
 make serve      # API on http://localhost:8000  (docs at /docs)
 make dashboard  # dashboard on http://localhost:8501

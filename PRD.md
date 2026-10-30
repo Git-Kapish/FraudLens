@@ -283,14 +283,14 @@ Scope is fixed. If a phase overruns, compress the polish of that phase rather th
 
 ## 15. Acceptance Checklist
 
-- [ ] Chronological split verified by test
-- [ ] No fit on validation or test data anywhere
-- [ ] 6+ models compared on identical test set, with baseline
-- [ ] PR-AUC is the headline metric, with bootstrap CI
-- [ ] Threshold chosen on validation by cost, reported on test
-- [ ] SHAP global and local plots exist
-- [ ] `/predict`, `/predict/batch`, `/explain`, `/health`, `/metrics` work and are tested
-- [ ] Dashboard has all 5 pages
-- [ ] `docker compose up` brings up both services
-- [ ] CI green
-- [ ] README states assumptions (review cost) and limitations
+- [x] Chronological split verified by test
+- [x] No fit on validation or test data anywhere
+- [x] 6+ models compared on identical test set, with baseline
+- [x] PR-AUC is the headline metric, with bootstrap CI
+- [x] Threshold chosen on validation by cost, reported on test
+- [x] SHAP global and local plots exist
+- [x] `/predict`, `/predict/batch`, `/explain`, `/health`, `/metrics` work and are tested
+- [x] Dashboard has all 5 pages
+- [x] `docker compose up` brings up both services
+- [x] CI green
+- [x] README states assumptions (review cost) and limitations

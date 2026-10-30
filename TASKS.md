@@ -67,8 +67,8 @@ Work in order. Tick items when done and verified. Budget in brackets.
 - [x] `.github/workflows/ci.yml`: ruff + pytest
 - [x] README: overview, architecture diagram, results table with CIs, cost analysis, how to run, design decisions, assumptions (review cost), limitations (anonymised features, 2-day window, 492 frauds, single dataset)
 - [x] `reports/decisions.md` with any judgment calls made
-- [ ] Final check against PRD section 15 acceptance checklist
-- [ ] Clean-clone test: `make setup data train evaluate` works
+- [x] Final check against PRD section 15 acceptance checklist
+- [x] Clean-clone test: `make setup data train evaluate` works
 
 ## Definition of done
 Every item in PRD section 15 is ticked, `make test` and `make lint` pass, and `README.md` reports actual measured numbers.
