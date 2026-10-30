@@ -51,3 +51,9 @@ def test_bootstrap_ci_is_reproducible_and_brackets_estimate():
     assert a == b
     lo, hi = a["ap"]
     assert lo < average_precision_score(y, s) < hi
+
+
+def test_bootstrap_ci_without_frauds_raises_instead_of_hanging():
+    y, s = np.zeros(100, dtype=int), np.linspace(0, 1, 100)
+    with pytest.raises(ValueError, match="No frauds"):
+        bootstrap_ci(y, s, {"ap": average_precision_score}, n_resamples=10, level=0.95, seed=0)

@@ -21,8 +21,9 @@ from fraud.api.main import load_artifacts
 from fraud.config import load_config, resolve_path
 from fraud.cost import best_threshold, cost_by_threshold, flag_nothing_cost, savings, total_cost
 from fraud.data import TARGET, dedupe, load_raw, time_split, validate_schema
-from fraud.evaluate import operating_point
+from fraud.evaluate import DEFAULT_THRESHOLD, operating_point
 from fraud.explain import top_k_contributions
+from fraud.features import SECONDS_PER_HOUR
 from fraud.replay import latency_summary, replay
 
 CFG = load_config()
@@ -33,8 +34,6 @@ PAGES = [
     "Transaction explorer",
     "Live replay",
 ]
-SECONDS_PER_HOUR = 3600
-DEFAULT_THRESHOLD = 0.5
 FEED_ROWS = 15
 UPDATE_EVERY = 5  # redraw the replay page every N transactions
 st.set_page_config(page_title="FraudLens", layout="wide")

@@ -84,6 +84,8 @@ def bootstrap_ci(
     seed: int,
 ) -> dict[str, tuple[float, float]]:
     """Percentile bootstrap CI for each metric, using the same resamples for all of them."""
+    if not np.any(y == 1):  # every resample would be skipped and the loop would never end
+        raise ValueError("No frauds to bootstrap: PR-AUC is undefined")
     rng = np.random.default_rng(seed)
     n = len(y)
     draws: dict[str, list[float]] = {k: [] for k in metrics}

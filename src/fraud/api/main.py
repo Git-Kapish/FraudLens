@@ -33,8 +33,13 @@ from fraud.config import resolve_path
 from fraud.data import FEATURES
 from fraud.explain import base_estimator, build_explainer, top_k_contributions
 
-logging.basicConfig(level=logging.INFO, format="%(message)s")
+# Own handler, so request lines show under uvicorn without changing logging for importers
 logger = logging.getLogger("fraud.api")
+_handler = logging.StreamHandler()
+_handler.setFormatter(logging.Formatter("%(message)s"))
+logger.addHandler(_handler)
+logger.setLevel(logging.INFO)
+logger.propagate = False
 LATENCY_WINDOW = 10_000  # most recent requests kept per endpoint for percentiles
 
 
@@ -54,6 +59,11 @@ def load_artifacts() -> Artifacts:
     models_dir = resolve_path("models_dir")
     meta = json.loads((models_dir / "metadata.json").read_text(encoding="utf-8"))
     threshold = json.loads((models_dir / "threshold.json").read_text(encoding="utf-8"))
+    if threshold["model_version"] != meta["model_version"]:
+        raise RuntimeError(
+            f"threshold.json was chosen for {threshold['model_version']}, but the saved model is "
+            f"{meta['model_version']}. Run `make evaluate` to choose its threshold."
+        )
     # joblib is pickle: these files are written by this repo's own train.py, so they are trusted
     pipeline = joblib.load(models_dir / "pipeline.joblib")
     model = joblib.load(models_dir / "best_calibrated.joblib")

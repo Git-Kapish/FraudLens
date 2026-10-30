@@ -16,10 +16,10 @@ import pandas as pd  # noqa: E402
 from sklearn.metrics import precision_recall_curve, roc_curve  # noqa: E402
 
 from fraud.config import load_config, resolve_path  # noqa: E402
+from fraud.evaluate import DEPLOYED  # noqa: E402
 from fraud.models import DISPLAY_NAMES  # noqa: E402
 
 logger = logging.getLogger(__name__)
-DEPLOYED = "best_calibrated"
 BASELINE_MODEL = "M0_dummy"
 
 

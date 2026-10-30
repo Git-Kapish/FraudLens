@@ -144,6 +144,21 @@ def fit_ensemble(data: Data, models: dict[str, Any], pr_auc: dict[str, float]) -
     pr_auc["M7_ensemble"] = evaluate_and_log("M7_ensemble", ensemble, data)
 
 
+# How to rebuild each deployable model on a CV fold, for out-of-fold calibration scores
+CALIBRATION_RECIPES: dict[str, Callable[[np.ndarray, dict[str, Any]], Any]] = {
+    "M3_xgb": lambda yf, params: build_xgb(spw=scale_pos_weight(yf)),
+    "M3_tuned": lambda yf, params: build_xgb(params, spw=scale_pos_weight(yf)),
+    "M4_xgb_smote": lambda yf, params: build_model("M4_xgb_smote", yf),
+}
+
+
+def check_deployable() -> None:
+    """Fail before training if a deployable model has no calibration recipe."""
+    missing = set(load_config()["training"]["deployable_models"]) - set(CALIBRATION_RECIPES)
+    if missing:
+        raise ValueError(f"No calibration recipe for deployable models: {sorted(missing)}")
+
+
 def pick_deployable(pr_auc: dict[str, float]) -> str:
     """Best-by-validation among the XGBoost-family models allowed for serving."""
     allowed = load_config()["training"]["deployable_models"]
@@ -156,13 +171,9 @@ def calibrate_best(
     """Fit isotonic on out-of-fold train scores of `name`'s recipe; check on val."""
     X_train, y_train = data["train"]
     X_val, y_val = data["val"]
-    factories: dict[str, Callable[[np.ndarray], Any]] = {
-        "M3_xgb": lambda yf: build_xgb(spw=scale_pos_weight(yf)),
-        "M3_tuned": lambda yf: build_xgb(best_params, spw=scale_pos_weight(yf)),
-        "M4_xgb_smote": lambda yf: build_model("M4_xgb_smote", yf),
-    }
+    recipe = CALIBRATION_RECIPES[name]
     scores, labels = oof_scores(
-        factories[name], X_train, y_train, load_config()["training"]["cv_splits"]
+        lambda yf: recipe(yf, best_params), X_train, y_train, load_config()["training"]["cv_splits"]
     )
     calibrated = CalibratedModel(base, fit_isotonic(scores, labels))
     raw_val = base.predict_proba(X_val)[:, 1]
@@ -214,6 +225,7 @@ def save_artifacts(
 
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(message)s")
+    check_deployable()
     seed_everything()
     init_mlflow()
     pipeline, data = build_matrices()

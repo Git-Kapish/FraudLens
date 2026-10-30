@@ -199,7 +199,7 @@ curl -X POST "http://localhost:8000/predict" \
   -d '{"Time": 0, "V1": 0, "...": "...", "V28": 0, "Amount": 25.0}'
 ```
 
-The actual request must include all 30 model input features: `Time`, `V1` through `V28`, and `Amount`. `Amount` must be non-negative. Invalid input is rejected with HTTP 422.
+The actual request must include all 30 model input features: `Time`, `V1` through `V28`, and `Amount`. `Amount` must be non-negative. Invalid input is rejected with HTTP 422. The API refuses to start if `models/threshold.json` was selected for a different model version than `models/metadata.json`; run `make evaluate` after retraining.
 
 Prediction responses include `fraud_probability`, `is_fraud`, `threshold`, `model_version`, and `latency_ms`. Request logs record the request identifier, score, and latency; raw feature values are not logged.
 

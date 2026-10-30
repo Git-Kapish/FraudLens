@@ -56,16 +56,17 @@ class AutoencoderScorer:
         self.mean_: np.ndarray | None = None
         self.std_: np.ndarray | None = None
 
-    def _standardise(self, X: pd.DataFrame) -> torch.Tensor:
-        return torch.tensor((X.to_numpy() - self.mean_) / self.std_, dtype=torch.float32)
+    def _standardise(self, X: pd.DataFrame | np.ndarray) -> torch.Tensor:
+        return torch.tensor((np.asarray(X) - self.mean_) / self.std_, dtype=torch.float32)
 
     def fit(self, X: pd.DataFrame, y: np.ndarray) -> AutoencoderScorer:
         """Train on rows with y == 0 only; scaling stats come from those rows too."""
         seed = load_config()["seed"]
         torch.manual_seed(seed)
-        legit = X[np.asarray(y) == 0]
-        self.mean_ = legit.to_numpy().mean(axis=0)
-        self.std_ = np.where(legit.to_numpy().std(axis=0) == 0, 1.0, legit.to_numpy().std(axis=0))
+        legit = np.asarray(X)[np.asarray(y) == 0]
+        self.mean_ = legit.mean(axis=0)
+        std = legit.std(axis=0)
+        self.std_ = np.where(std == 0, 1.0, std)
         data = self._standardise(legit)
         self.net = _build_net(data.shape[1], self.cfg["hidden"])
         opt = torch.optim.Adam(self.net.parameters(), lr=self.cfg["lr"])

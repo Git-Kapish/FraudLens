@@ -1,4 +1,6 @@
 import json
+import subprocess
+import sys
 
 import pytest
 from conftest import make_artifacts, make_frame
@@ -121,3 +123,26 @@ def test_real_artifacts_load_and_score():
         r = c.post("/predict", json=row)
         assert r.status_code == 200
         assert c.get("/health").json()["model_version"] == r.json()["model_version"]
+
+
+def test_threshold_for_a_different_model_is_refused(tmp_path, monkeypatch):
+    from fraud.api import main
+
+    (tmp_path / "metadata.json").write_text(json.dumps({"model_version": "new-model"}))
+    (tmp_path / "threshold.json").write_text(
+        json.dumps({"threshold": 0.3, "model_version": "old-model"})
+    )
+    monkeypatch.setattr(main, "resolve_path", lambda key: tmp_path)
+    with pytest.raises(RuntimeError, match="make evaluate"):
+        main.load_artifacts()
+
+
+def test_importing_the_api_leaves_global_logging_alone():
+    # Run in a fresh process: pytest's own logging setup would hide the effect here
+    code = (
+        "import logging, fraud.api.main as m; "
+        "print(logging.getLogger().level, logging.getLogger('httpx').isEnabledFor(logging.INFO), "
+        "m.logger.isEnabledFor(logging.INFO))"
+    )
+    out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=True)
+    assert out.stdout.split() == ["30", "False", "True"]  # root stays WARNING, API logs INFO
