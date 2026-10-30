@@ -83,7 +83,7 @@ def global_plots(
     rng = np.random.default_rng(cfg["seed"])
     fraud_idx = np.flatnonzero(y == 1)
     legit_idx = np.flatnonzero(y == 0)
-    n_legit = max(cfg["explain"]["global_sample_size"] - len(fraud_idx), 0)
+    n_legit = min(max(cfg["explain"]["global_sample_size"] - len(fraud_idx), 0), len(legit_idx))
     idx = np.sort(np.concatenate([fraud_idx, rng.choice(legit_idx, n_legit, replace=False)]))
     sample = X.iloc[idx]
     values = shap_values(explainer, sample)

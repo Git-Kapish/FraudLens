@@ -1,0 +1,18 @@
+# Runtime-only dependencies for the API and dashboard images (no torch, mlflow, jupyter or test tools).
+# Versions match requirements.txt (xgboost-cpu is the same release without the CUDA/NCCL dependency): the saved models are pickles and must load with the same
+# scikit-learn and xgboost they were trained with.
+numpy==2.4.6
+pandas==3.1.0
+scikit-learn==1.9.1
+imbalanced-learn==0.14.2
+xgboost-cpu==3.2.0
+shap==0.51.0
+fastapi==0.162.0
+uvicorn[standard]==0.54.0
+pydantic==2.14.2
+streamlit==1.66.1
+plotly==7.1.0
+matplotlib==3.11.2
+httpx==0.28.1
+joblib==1.6.0
+pyyaml==6.0.3

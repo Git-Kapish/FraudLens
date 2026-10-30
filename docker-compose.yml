@@ -1,0 +1,33 @@
+# API on :8000 and dashboard on :8501.
+# The dashboard also needs the dataset, which is not in the image or the repo:
+# run `make data` first so ./data/raw/creditcard.csv exists.
+services:
+  api:
+    build: .
+    image: fraudlens:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  dashboard:
+    build: .
+    image: fraudlens:latest
+    command: ["streamlit", "run", "app/dashboard.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--server.headless", "true", "--browser.gatherUsageStats", "false"]
+    ports:
+      - "8501:8501"
+    environment:
+      API_URL: http://api:8000
+    volumes:
+      - ./models:/app/models:ro
+      - ./reports:/app/reports:ro
+      - ./data:/app/data:ro
+    depends_on:
+      api:
+        condition: service_healthy

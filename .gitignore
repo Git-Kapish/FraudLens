@@ -17,3 +17,4 @@ train_run.log
 api_server.log
 .playwright-mcp/
 dashboard_server.log
+docker_build.log

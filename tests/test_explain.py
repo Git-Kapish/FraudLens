@@ -4,7 +4,14 @@ import pytest
 from xgboost import XGBClassifier
 
 from fraud.calibrate import CalibratedModel, fit_isotonic
-from fraud.explain import base_estimator, build_explainer, pick_examples, top_k_contributions
+from fraud.explain import (
+    base_estimator,
+    build_explainer,
+    global_plots,
+    pick_examples,
+    top_k_contributions,
+    waterfall_plots,
+)
 
 
 @pytest.fixture
@@ -40,6 +47,19 @@ def test_explainer_unwraps_calibrated_model(fitted):
     calibrated = CalibratedModel(model, fit_isotonic(raw, y))
     assert base_estimator(calibrated) is model
     assert build_explainer(calibrated) is not None
+
+
+def test_global_and_waterfall_plots_write_files(fitted, tmp_path):
+    model, X, y = fitted
+    explainer = build_explainer(model)
+    # fewer legit rows than global_sample_size: must sample what exists, not crash
+    importance = global_plots(explainer, X, y, tmp_path)
+    assert importance.is_monotonic_decreasing and set(importance.index) == set(X.columns)
+    assert (tmp_path / "shap_summary.png").stat().st_size > 0
+    assert (tmp_path / "shap_bar.png").stat().st_size > 0
+    paths = waterfall_plots(explainer, X, [0, 5], tmp_path)
+    assert [p.name for p in paths] == ["shap_waterfall_1.png", "shap_waterfall_2.png"]
+    assert all(p.stat().st_size > 0 for p in paths)
 
 
 def test_pick_examples_spreads_over_flagged_frauds_only():

@@ -63,10 +63,10 @@ Work in order. Tick items when done and verified. Budget in brackets.
 - [x] Verify all pages load with no errors on trained artifacts
 
 ## Phase 9: Ship [0:30]
-- [ ] `Dockerfile` (API) and `docker-compose.yml` (API + dashboard)
-- [ ] `.github/workflows/ci.yml`: ruff + pytest
-- [ ] README: overview, architecture diagram, results table with CIs, cost analysis, how to run, design decisions, assumptions (review cost), limitations (anonymised features, 2-day window, 492 frauds, single dataset)
-- [ ] `reports/decisions.md` with any judgment calls made
+- [x] `Dockerfile` (API) and `docker-compose.yml` (API + dashboard)
+- [x] `.github/workflows/ci.yml`: ruff + pytest
+- [x] README: overview, architecture diagram, results table with CIs, cost analysis, how to run, design decisions, assumptions (review cost), limitations (anonymised features, 2-day window, 492 frauds, single dataset)
+- [x] `reports/decisions.md` with any judgment calls made
 - [ ] Final check against PRD section 15 acceptance checklist
 - [ ] Clean-clone test: `make setup data train evaluate` works
 
