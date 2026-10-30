@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.coverage
+.ipynb_checkpoints/
+mlruns/
+data/raw/
+data/processed/
+models/*.joblib
+models/*.pt
+kaggle.json
+.env
+.DS_Store
+*.egg-info/
