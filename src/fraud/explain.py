@@ -30,8 +30,14 @@ logger = logging.getLogger(__name__)
 
 
 def base_estimator(model: Any) -> Any:
-    """The tree model inside a CalibratedModel (or the model itself)."""
-    return model.base if isinstance(model, CalibratedModel) else model
+    """The tree model to explain: unwrap a CalibratedModel, then a pipeline's last step.
+
+    SMOTE in the M4 pipeline only runs during fit, so at predict time the final XGBoost
+    step sees exactly the features we pass in, and explaining it alone is correct.
+    """
+    if isinstance(model, CalibratedModel):
+        model = model.base
+    return model.steps[-1][1] if hasattr(model, "steps") else model
 
 
 def build_explainer(model: Any) -> shap.TreeExplainer:

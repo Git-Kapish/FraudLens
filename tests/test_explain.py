@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import pytest
+from conftest import make_frame
 from xgboost import XGBClassifier
 
 from fraud.calibrate import CalibratedModel, fit_isotonic
@@ -12,6 +13,8 @@ from fraud.explain import (
     top_k_contributions,
     waterfall_plots,
 )
+from fraud.features import FeaturePipeline
+from fraud.models import build_model
 
 
 @pytest.fixture
@@ -60,6 +63,21 @@ def test_global_and_waterfall_plots_write_files(fitted, tmp_path):
     paths = waterfall_plots(explainer, X, [0, 5], tmp_path)
     assert [p.name for p in paths] == ["shap_waterfall_1.png", "shap_waterfall_2.png"]
     assert all(p.stat().st_size > 0 for p in paths)
+
+
+def test_smote_pipeline_model_can_be_explained():
+    # M4 is deployable (config.yaml); TreeExplainer cannot take an imblearn Pipeline directly
+    frame = make_frame(n=2500, fraud_rate=0.04).sort_values("Time")
+    X, y = FeaturePipeline().fit(frame).transform(frame), frame["Class"].to_numpy()
+    m4 = build_model("M4_xgb_smote", y).fit(X, y)
+    calibrated = CalibratedModel(m4, fit_isotonic(m4.predict_proba(X)[:, 1], y))
+    xgb = m4.named_steps["clf"]
+    assert base_estimator(calibrated) is xgb
+    explainer = build_explainer(calibrated)
+    row = X.iloc[[0]]
+    total = sum(t["contribution"] for t in top_k_contributions(explainer, row, k=X.shape[1]))
+    margin = float(xgb.predict(row, output_margin=True)[0])
+    assert total + float(explainer.expected_value) == pytest.approx(margin, abs=1e-4)
 
 
 def test_waterfall_plots_with_no_flagged_frauds_is_a_no_op(fitted, tmp_path):
