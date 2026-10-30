@@ -10,3 +10,5 @@ Judgment calls made while building, in order.
 ## Measured on the real data
 - Raw: 284,807 rows, 492 frauds. Dedup removed **1,081** exact duplicate rows, leaving 283,726.
 - Split (train/val/test): 198,608 / 42,559 / 42,559 rows with **366 / 55 / 52** frauds. Val and test are small, so PR-AUC will be noisy there; bootstrap CIs are essential.
+5. **MLflow file store opt-in.** MLflow 3.17 raises on `file:./mlruns` unless `MLFLOW_ALLOW_FILE_STORE=true`. The PRD asks for a local file store, so `train.init_mlflow()` sets that variable instead of switching to sqlite. `mlruns/` is gitignored.
+6. **Raw `Time` is not a model feature.** It is replaced by an hour-of-day feature (relative to the first transaction, since the real clock offset is unknown). `log1p(Amount)` and hour are standardised with train statistics; V1-V28 pass through unscaled.

@@ -18,11 +18,11 @@ Work in order. Tick items when done and verified. Budget in brackets.
 - [x] Write 5-6 bullet takeaways at the end of the notebook
 
 ## Phase 3: Baselines and core models [1:05]
-- [ ] `src/fraud/features.py`: Amount (log1p, scaled), hour-of-day from Time, scaler fit on train only
-- [ ] `src/fraud/models.py`: factory for M0 Dummy, M1 LogReg (balanced), M2 RandomForest (balanced_subsample), M3 XGBoost with `scale_pos_weight`, M4 XGBoost + SMOTE (train only)
-- [ ] MLflow logging (params, metrics, model artifact) for every run
-- [ ] `tests/test_features.py`: scaler fit on train only
-- [ ] Verify: validation PR-AUC table printed for M0-M4
+- [x] `src/fraud/features.py`: Amount (log1p, scaled), hour-of-day from Time, scaler fit on train only
+- [x] `src/fraud/models.py`: factory for M0 Dummy, M1 LogReg (balanced), M2 RandomForest (balanced_subsample), M3 XGBoost with `scale_pos_weight`, M4 XGBoost + SMOTE (train only)
+- [x] MLflow logging (params, metrics, model artifact) for every run
+- [x] `tests/test_features.py`: scaler fit on train only
+- [x] Verify: validation PR-AUC table printed for M0-M4
 
 ## Phase 4: Anomaly models, tuning, calibration [0:55]
 - [ ] M5 Isolation Forest (fit on train, score = negative decision function)

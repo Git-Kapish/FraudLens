@@ -19,6 +19,23 @@ cost:
   sensitivity_review_costs: [1, 5, 10, 25]
   # false negative cost = transaction Amount
 
+models:
+  logreg:
+    max_iter: 1000
+  random_forest:
+    n_estimators: 200
+    max_depth: 12
+    min_samples_leaf: 5
+  xgboost:
+    n_estimators: 300
+    max_depth: 6
+    learning_rate: 0.1
+    subsample: 0.8
+    colsample_bytree: 0.8
+  smote:
+    sampling_strategy: 0.1   # minority/majority ratio after resampling
+    k_neighbors: 5
+
 training:
   optuna_trials: 30
   cv_splits: 5

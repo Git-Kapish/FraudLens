@@ -15,10 +15,9 @@ import seaborn as sns  # noqa: E402
 
 from fraud.config import resolve_path  # noqa: E402
 from fraud.data import FEATURES, TARGET  # noqa: E402
+from fraud.features import SECONDS_PER_HOUR, hour_of_day  # noqa: E402
 
 logger = logging.getLogger(__name__)
-SECONDS_PER_HOUR = 3600
-HOURS_PER_DAY = 24
 
 
 def _save(fig: plt.Figure, name: str, out_dir: Path | None) -> Path:
@@ -28,11 +27,6 @@ def _save(fig: plt.Figure, name: str, out_dir: Path | None) -> Path:
     fig.savefig(path, dpi=130, bbox_inches="tight")
     logger.info("Saved %s", path)
     return path
-
-
-def hour_of_day(time: pd.Series) -> pd.Series:
-    """Hour since the first transaction, wrapped to 0-23 (the real start clock time is unknown)."""
-    return ((time // SECONDS_PER_HOUR) % HOURS_PER_DAY).astype(int)
 
 
 def plot_class_balance(df: pd.DataFrame, out_dir: Path | None = None) -> dict[str, float]:
