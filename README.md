@@ -82,41 +82,26 @@ A local benchmark of 500 sequential `POST /predict` requests, using one worker, 
 
 ## Architecture
 
-```text
-Kaggle transaction CSV
-        |
-        v
-scripts/download_data.py
-        |
-        v
-fraud.data
-  load, validate, deduplicate, chronological split
-        |
-        v
-fraud.features
-  log1p(Amount), hour-of-day, train-only scaling
-        |
-        v
-fraud.models / anomaly / tune / calibrate
-  model comparison, Optuna, isotonic calibration
-        |                              |
-        +--------------------------> MLflow
-        |
-        v
-fraud.evaluate / cost / report
-  metrics, bootstrap intervals, threshold analysis
-        |
-        v
-models/
-  model artifacts, metadata, threshold
-        |                         |
-        v                         v
-fraud.api (FastAPI)       app/dashboard.py (Streamlit)
-        ^                         |
-        +------ fraud.replay -----+
+The pipeline separates data preparation, model development, evaluation, and serving. The FastAPI service and Streamlit dashboard use the shared implementation in `src/fraud/`.
+
+```mermaid
+flowchart TD
+    A["ULB Credit Card Fraud CSV"] --> B["scripts/download_data.py"]
+    B --> C["fraud.data<br/>Validate · deduplicate · chronological split"]
+    C --> D["fraud.features<br/>Feature engineering · train-only scaling"]
+    D --> E["Model development<br/>Supervised models · anomaly detection"]
+    E --> F["Optuna tuning and calibration"]
+    F --> G["fraud.evaluate / cost / report<br/>PR-AUC · bootstrap CIs · threshold analysis"]
+    E -. "Experiment tracking" .-> M["MLflow"]
+    F -. "Experiment tracking" .-> M
+    G --> H["Versioned model artifacts<br/>models/ · metadata · threshold"]
+    H --> I["Shared inference logic<br/>src/fraud/"]
+    I --> J["FastAPI service<br/>fraud.api"]
+    I --> K["Streamlit dashboard<br/>app/dashboard.py"]
+    K <--> L["fraud.replay"]
+    L --> J
 ```
 
-Application, scripts, dashboard, and notebook code share the implementation in `src/fraud/`.
 
 ## Getting started
 
