@@ -12,10 +12,10 @@ Work in order. Tick items when done and verified. Budget in brackets.
 - [x] Verify: `make data && make test`
 
 ## Phase 2: EDA [0:35]
-- [ ] `notebooks/01_eda.ipynb` using `src/fraud` imports
-- [ ] Class imbalance, Amount and Time distributions by class, top feature separation, correlation heatmap, fraud rate by hour
-- [ ] Save figures to `reports/figures/`
-- [ ] Write 5-6 bullet takeaways at the end of the notebook
+- [x] `notebooks/01_eda.ipynb` using `src/fraud` imports
+- [x] Class imbalance, Amount and Time distributions by class, top feature separation, correlation heatmap, fraud rate by hour
+- [x] Save figures to `reports/figures/`
+- [x] Write 5-6 bullet takeaways at the end of the notebook
 
 ## Phase 3: Baselines and core models [1:05]
 - [ ] `src/fraud/features.py`: Amount (log1p, scaled), hour-of-day from Time, scaler fit on train only
