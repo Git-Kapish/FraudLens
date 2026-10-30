@@ -23,6 +23,15 @@ MODEL_NAMES = {
 }
 
 
+EXTRA_NAMES = {
+    "M5_iforest": "Isolation Forest",
+    "M6_autoencoder": "Autoencoder (legit-only)",
+    "M3_tuned": "XGBoost tuned (Optuna)",
+    "M7_ensemble": "Rank-average (tuned XGB + AE)",
+}
+DISPLAY_NAMES = {**MODEL_NAMES, **EXTRA_NAMES}
+
+
 def scale_pos_weight(y: np.ndarray) -> float:
     """Negatives per positive, the XGBoost class weight."""
     pos = float(np.sum(y == 1))
@@ -71,5 +80,7 @@ def build_model(name: str, y_train: np.ndarray) -> Any:
 
 
 def score(model: Any, X: Any) -> np.ndarray:
-    """Fraud probability for each row."""
+    """Fraud score for each row: `raw_score` for anomaly/ensemble models, else P(fraud)."""
+    if hasattr(model, "raw_score"):
+        return model.raw_score(X)
     return model.predict_proba(X)[:, 1]

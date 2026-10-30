@@ -25,12 +25,12 @@ Work in order. Tick items when done and verified. Budget in brackets.
 - [x] Verify: validation PR-AUC table printed for M0-M4
 
 ## Phase 4: Anomaly models, tuning, calibration [0:55]
-- [ ] M5 Isolation Forest (fit on train, score = negative decision function)
-- [ ] M6 small autoencoder (30-16-8-16-30), trained on legit-only train rows, under 20 epochs, score = reconstruction error
-- [ ] Optuna tuning of XGBoost, at least 30 trials, PR-AUC on `TimeSeriesSplit` over train
-- [ ] Calibrate best supervised model (isotonic or Platt, fit on validation) and plot reliability curve
-- [ ] Optional ensemble of tuned XGBoost and autoencoder scores (rank-average), evaluated like the rest
-- [ ] Save best model, scaler, and metadata to `models/`
+- [x] M5 Isolation Forest (fit on train, score = negative decision function)
+- [x] M6 small autoencoder (30-16-8-16-30), trained on legit-only train rows, under 20 epochs, score = reconstruction error
+- [x] Optuna tuning of XGBoost, at least 30 trials, PR-AUC on `TimeSeriesSplit` over train
+- [x] Calibrate best supervised model (isotonic or Platt, fit on validation) and plot reliability curve — done with isotonic on out-of-fold train scores instead, see decisions.md #7
+- [x] Optional ensemble of tuned XGBoost and autoencoder scores (rank-average), evaluated like the rest
+- [x] Save best model, scaler, and metadata to `models/`
 
 ## Phase 5: Evaluation and cost [0:40]
 - [ ] `src/fraud/evaluate.py`: PR-AUC, ROC-AUC, precision, recall, F1, F2, recall at 90% precision, precision at 80% recall, confusion matrix
